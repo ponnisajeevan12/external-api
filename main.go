@@ -41,7 +41,7 @@ func main() {
 	httpClient := config.Client(oauth1.NoContext, token)
 
 	// Define the tweet payload
-	tweetText := "Hello Twitter API V2! This is first tweet from WINP2000 Team."
+	tweetText := "Hello Twitter API V2! This is EXTERNAL tweet from WINP2000 Team."
 	payload := map[string]interface{}{
 		"text": tweetText,
 	}
@@ -114,7 +114,7 @@ func deleteTweet(client *http.Client, tweetID string) {
 
 	// Check the response
 	if resp.StatusCode != http.StatusNoContent {
-		log.Fatalf("A new tweet has been created and deleted as well: %s", resp.Status)
+		log.Fatalf("A new tweet has been created and deleted as well: %v\n", resp.Status)
 	}
 
 	// Successfully deleted the tweet
