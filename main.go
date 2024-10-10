@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/dghubble/oauth1"
 	"github.com/joho/godotenv"
@@ -40,7 +41,7 @@ func main() {
 	httpClient := config.Client(oauth1.NoContext, token)
 
 	// Define the tweet payload
-	tweetText := "Hello Twitter! This is my third tweet from the Twitter API v2."
+	tweetText := "Hello Twitter API V2! This is first tweet from WINP2000 Team."
 	payload := map[string]interface{}{
 		"text": tweetText,
 	}
@@ -78,6 +79,44 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error decoding response: %v", err)
 	}
+	tweetID := result["data"].(map[string]interface{})["id"].(string)
+
 	fmt.Printf("Posted Tweet ID: %v\n", result["data"].(map[string]interface{})["id"])
 
+	// Sleep for 5 seconds before deleting the tweet
+	time.Sleep(15 * time.Second)
+
+	// Call the function to delete the tweet
+	deleteTweet(httpClient, tweetID)
+}
+
+// Function to delete a tweet by ID
+func deleteTweet(client *http.Client, tweetID string) {
+	// Set the URL for deleting the tweet
+	url := "https://api.twitter.com/2/tweets/" + tweetID
+
+	// Create the request
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		log.Fatalf("Failed to create request: %v", err)
+	}
+
+	// Set the required headers
+	req.Header.Set("Authorization", "Bearer "+os.Getenv("TWITTER_BEARER_TOKEN"))
+	req.Header.Set("Content-Type", "application/json")
+
+	// Make the DELETE request
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalf("Failed to delete tweet: %v", err)
+	}
+	defer resp.Body.Close()
+
+	// Check the response
+	if resp.StatusCode != http.StatusNoContent {
+		log.Fatalf("A new tweet has been created and deleted as well: %s", resp.Status)
+	}
+
+	// Successfully deleted the tweet
+	fmt.Printf("Tweet with ID %s deleted successfully.\n", tweetID)
 }
