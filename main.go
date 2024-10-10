@@ -41,7 +41,7 @@ func main() {
 	httpClient := config.Client(oauth1.NoContext, token)
 
 	// Define the tweet payload
-	tweetText := "Hello Twitter API V2! This is EXTERNAL tweet from WINP2000 Team."
+	tweetText := "Hello Twitter API V2! This is an EXTERNAL tweet from WINP2000 Team."
 	payload := map[string]interface{}{
 		"text": tweetText,
 	}
